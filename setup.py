@@ -16,6 +16,8 @@ setup(name='miura',
       include_package_data=True,
       install_requires=[
           'jenkinsapi>=0.2.18',
+          'docopt',
+          'pyyaml'
       ],
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',

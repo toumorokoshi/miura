@@ -27,7 +27,7 @@ and a file called example.py with the following:
             'host': JENKINS_HOST_URL
             'name': 'foo'
             'template': 'base.xml'
-            'job_data': {}
+            'data': {}
         }
 
 And choose a job you want to copy off of, and download it to templates/base.xml:
@@ -72,7 +72,7 @@ replicate.
 
     <!-- your markup may vary -->
     <hudson.tasks.Shell>
-      <command>echo &apos;{{ job_data.message }}&apos;</command>
+      <command>echo &apos;{{message}}&apos;</command>
     </hudson.tasks.Shell>
 
 miura uses the [jinja2](http://jinja.pocoo.org/docs/) templating
@@ -89,7 +89,7 @@ Modify the script.py from before with the following:
                 'host': JENKINS_HOST_URL
                 'name': 'echo-' + echo_message
                 'template': 'echo_template.xml'
-                'job_data': {
+                'data': {
                     'message': echo_message
                 }
             }
