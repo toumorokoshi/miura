@@ -8,6 +8,7 @@ class JenkinsApiCache(dict):
         self[key] = Jenkins(key)
         return self[key]
 
+
 def parse_job(run_method, options, data, templates):
     """
     Generates and returns a job object with the following:
