@@ -1,4 +1,4 @@
-from .generator import generate_config_xml
+from utils import specialize_content
 from jenkinsapi.jenkins import Jenkins
 
 
@@ -52,10 +52,15 @@ class MiuraJenkinsJob(object):
         self.name = name
         self.config_xml = config_xml
 
-    def upsert_job(self):
+    def upsert(self):
         """ create or update the jenkins job """
         if not self.jenkins_host.has_job(self.name):
-            self.create_job(self.name, self.config_xml)
+            self.jenkins_host.create_job(self.name, self.config_xml)
         else:
             jenkins_job = self.jenkins_host[self.name]
             jenkins_job.update_config(self.config_xml)
+
+    def delete(self):
+        """ delete the jenkins job, if it exists """
+        if self.jenkins_host.has_job(self.name):
+            self.jenkins_host.delete_job(self.name)

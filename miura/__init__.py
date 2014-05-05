@@ -15,17 +15,13 @@ import os
 import signal
 import sys
 
-from .data import get_data
-from .templates import TemplateSet
-from .scripts import get_script_method
-from .lib import operate_jenkins_job, MiuraException
-
 DATA_DIRECTORY = os.path.join(os.curdir, 'data')
 SCRIPTS_DIRECTORY = os.path.join(os.curdir, 'scripts')
 TEMPLATE_DIRECTORY = os.path.join(os.curdir, 'templates')
 
 LOGGER = logging.getLogger(__name__)
 
+from .script import MiuraScript
 
 def signal_handler(signal, frame):
     print("\nShutting down miura...")
@@ -42,11 +38,14 @@ def main(argv=sys.argv[1:]):
             key, value = _parse_filter_string(filter_string)
             filters[key] = value
 
-        data = get_data(DATA_DIRECTORY)
-        templates = TemplateSet(TEMPLATE_DIRECTORY)
-        script = get_script_method(SCRIPTS_DIRECTORY, options['<script_name>'])
-        for job in script(options['<args>'], data):
-            operate_jenkins_job(job, templates, delete=options['--delete'])
+        miura_script = MiuraScript(options['<script_name>'], 
+                                   DATA_DIRECTORY,
+                                   SCRIPTS_DIRECTORY,
+                                   TEMPLATE_DIRECTORY)
+        if options['--delete']:
+            miura_script.delete = True
+        miura_script()
+
     except (MiuraException, AssertionError):
         LOGGER.exception("")
 

@@ -2,6 +2,10 @@ import yaml
 import os
 
 
+def load_data_from_path(path):
+    file_paths = load_file_or_directory(path)
+    return retrieve_data(file_paths)
+
 def load_file_or_directory(path):
     """
     given a path, determine if the path is a file or directory, and
