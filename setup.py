@@ -6,7 +6,7 @@ except:
     from distutils.core import setup
 
 setup(name='miura',
-      version='0.1.0',
+      version='0.0.1',
       description='a Jenkins job management tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
