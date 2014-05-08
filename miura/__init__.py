@@ -14,6 +14,7 @@ import logging
 import os
 import signal
 import sys
+from miura.exceptions import MiuraException
 
 DATA_DIRECTORY = os.path.join(os.curdir, 'data')
 SCRIPTS_DIRECTORY = os.path.join(os.curdir, 'scripts')
@@ -22,6 +23,7 @@ TEMPLATE_DIRECTORY = os.path.join(os.curdir, 'templates')
 LOGGER = logging.getLogger(__name__)
 
 from .script import MiuraScript
+
 
 def signal_handler(signal, frame):
     print("\nShutting down miura...")
@@ -38,7 +40,7 @@ def main(argv=sys.argv[1:]):
             key, value = _parse_filter_string(filter_string)
             filters[key] = value
 
-        miura_script = MiuraScript(options['<script_name>'], 
+        miura_script = MiuraScript(options['<script_name>'],
                                    DATA_DIRECTORY,
                                    SCRIPTS_DIRECTORY,
                                    TEMPLATE_DIRECTORY)

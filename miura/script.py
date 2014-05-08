@@ -10,11 +10,12 @@ DEFAULT_DATA_DIRECTORY = os.path.join(os.curdir, 'data')
 DEFAULT_TEMPLATE_DIRECTORY = os.path.join(os.curdir, 'templates')
 DEFAULT_SCRIPTS_DIRECTORY = os.path.join(os.curdir, 'scripts')
 
+
 class MiuraScript(object):
 
     delete = False  # if true, delete the jobs instead of upserting them
 
-    def __init__(self, script_name, 
+    def __init__(self, script_name,
                  data_directory,
                  scripts_directory,
                  template_directory

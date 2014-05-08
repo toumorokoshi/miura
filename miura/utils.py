@@ -10,8 +10,9 @@ def get_method_from_file(file_path, method_name):
         "unable to find method {0} from module {1}. does the method exist?".format(method_name, module_path)
     return getattr(module, method_name)
 
+
 def specialize_content(content, data):
-    """ 
+    """
     return a string from a jinja2 template <content> rendered with
     <data>
     """
