@@ -2,7 +2,7 @@ import os
 import sys
 
 from .runner import parse_job
-from .utils import get_method_from_file
+from .utils import get_method_from_module, format_path_to_module
 from .data import load_data_from_path
 from .template import TemplateSet
 
@@ -27,14 +27,14 @@ class MiuraScript(object):
         self.method_options = {}
 
     def __call__(self):
-        target_script = os.path.join(
-            self.scripts_directory,
+        target_module = "{0}.{1}".format(
+            format_path_to_module(self.scripts_directory),
             self.script_name
         )
 
-        run_method = get_method_from_file(target_script, 'run')
+        run_method = get_method_from_module(target_module, 'run')
         data = load_data_from_path(self.data_directory)
-        templates = TemplateSet(template_directory)
+        templates = TemplateSet(self.template_directory)
 
         if self.delete:
             target_method = 'delete'

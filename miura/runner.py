@@ -1,5 +1,8 @@
+import logging
 from utils import specialize_content
 from jenkinsapi.jenkins import Jenkins
+
+LOGGER = logging.getLogger(__name__)
 
 
 class JenkinsApiCache(dict):
@@ -26,10 +29,14 @@ def parse_job(run_method, options, data, templates):
         host = job_dict['host']
         name = job_dict['name']
         template = job_dict['template']
-        job_data = job_dict['job_data']
+        job_data = {
+            'name': name,
+            'host': host,
+            'job_data': job_dict['job_data']
+        }
 
         template_body = templates[template]
-        config_xml = generate_config_xml(template_body, job_data)
+        config_xml = specialize_content(template_body, job_data)
 
         yield MiuraJenkinsJob(
             jenkinsapi_cache[host],
@@ -55,12 +62,15 @@ class MiuraJenkinsJob(object):
     def upsert(self):
         """ create or update the jenkins job """
         if not self.jenkins_host.has_job(self.name):
+            LOGGER.info("creating {0}...".format(self.name))
             self.jenkins_host.create_job(self.name, self.config_xml)
         else:
             jenkins_job = self.jenkins_host[self.name]
+            LOGGER.info("updating {0}...".format(self.name))
             jenkins_job.update_config(self.config_xml)
 
     def delete(self):
         """ delete the jenkins job, if it exists """
         if self.jenkins_host.has_job(self.name):
+            LOGGER.info("deleting {0}...".format(self.name))
             self.jenkins_host.delete_job(self.name)

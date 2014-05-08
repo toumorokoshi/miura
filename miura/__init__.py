@@ -9,7 +9,7 @@ Options:
   -f <filter>..., --filter <filter>...    Filters
   -d, --delete                            if set, will delete jobs
 """
-import docopt
+from docopt import docopt
 import logging
 import os
 import signal
@@ -31,6 +31,10 @@ def signal_handler(signal, frame):
 
 
 def main(argv=sys.argv[1:]):
+    # add current directory to system path, if it's not on there already
+    # this combats against buildout sandboxing sys.path
+    if os.curdir not in sys.path:
+        sys.path.append(os.curdir)
     signal.signal(signal.SIGINT, signal_handler)
     _create_stdout_logger()
     options = docopt(__doc__, argv=argv, options_first=True)

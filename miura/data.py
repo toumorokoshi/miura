@@ -1,10 +1,12 @@
 import yaml
 import os
+from .exceptions import MiuraException
 
 
 def load_data_from_path(path):
     file_paths = load_file_or_directory(path)
     return retrieve_data(file_paths)
+
 
 def load_file_or_directory(path):
     """
@@ -29,8 +31,17 @@ def retrieve_data(file_paths):
     """
     data_dict = {}
     for file_path in file_paths:
-        content = yaml.load(file_path)
-        assert isinstance(content, dict), \
-            "{0} is does not translate to a dictionary!".format(file_path)
-        data_dict.update(content)
+        with open(file_path) as fh:
+            try:
+                content = yaml.load(fh.read())
+            except yaml.parser.ParserError as e:
+                raise MiuraException(
+                    "Unable to parse yaml at {0}: \n {1}".format(
+                        file_path,
+                        str(e)
+                    ))
+
+            assert isinstance(content, dict), \
+                "{0} is does not translate to a dictionary!".format(file_path)
+            data_dict.update(content)
     return data_dict

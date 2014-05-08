@@ -14,6 +14,9 @@ class TemplateSet(object):
             template_path
         )
         assert not os.path.isdir(template_path), "template path {0} is a directory".format(template_path)
-        
+
         with open(template_path, 'r') as template_file:
             return template_file.read()
+
+    def __getitem__(self, name):
+        return self.get_template(name)
