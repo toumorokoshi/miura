@@ -6,7 +6,7 @@ class TestSpecializeContent(object):
     def test_specialize_content(self):
         template = "{{ name }}, {{ foo }}"
         job_data = {
-            "foo": "foojob, hello world",
+            "foo": "hello world",
             "name": "foojob"
         }
         output = utils.specialize_content(

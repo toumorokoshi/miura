@@ -1,5 +1,4 @@
 import os
-import sys
 
 from .runner import parse_job
 from .utils import get_method_from_module, format_path_to_module
