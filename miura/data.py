@@ -34,14 +34,15 @@ def retrieve_data(file_paths):
         with open(file_path) as fh:
             try:
                 content = yaml.load(fh.read())
-            except yaml.parser.ParserError as e:
+            except yaml.YAMLError as e:
                 raise MiuraException(
                     "Unable to parse yaml at {0}: \n {1}".format(
                         file_path,
                         str(e)
                     ))
-
-            assert isinstance(content, dict), \
-                "{0} is does not translate to a dictionary!".format(file_path)
+            if not isinstance(content, dict):
+                raise MiuraException(
+                    "{0} is does not translate to a dictionary!".format(file_path)
+                )
             data_dict.update(content)
     return data_dict
