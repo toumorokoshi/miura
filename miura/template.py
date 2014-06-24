@@ -1,11 +1,12 @@
 import os
 
+
 class TemplateSet(object):
 
     def __init__(self, root_directory):
         self.root_directory = root_directory
 
-    def get_template(self, template_name):
+    def get(self, template_name):
         template_path = os.path.join(self.root_directory,
                                      template_name)
 
@@ -19,4 +20,4 @@ class TemplateSet(object):
             return template_file.read()
 
     def __getitem__(self, name):
-        return self.get_template(name)
+        return self.get(name)
