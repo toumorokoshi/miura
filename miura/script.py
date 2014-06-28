@@ -1,6 +1,6 @@
 import os
 
-from .runner import parse_job
+from miura import runner
 from .utils import get_method_from_module, format_path_to_module
 from .data import load_data_from_path
 from .template import TemplateSet
@@ -40,5 +40,6 @@ class MiuraScript(object):
         else:
             target_method = 'upsert'
 
-        for job in parse_job(run_method, self.method_options, data, templates):
+        for job in runner.parse_job(run_method, self.method_options,
+                                    data, templates):
             getattr(job, target_method)()
