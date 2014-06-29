@@ -1,6 +1,6 @@
 import logging
 from utils import specialize_content
-from jenkinsapi.jenkins import Jenkins
+from jenkinsapi import jenkins
 
 LOGGER = logging.getLogger(__name__)
 
@@ -8,41 +8,47 @@ LOGGER = logging.getLogger(__name__)
 class JenkinsApiCache(dict):
 
     def __missing__(self, key):
-        self[key] = Jenkins(key)
+        self[key] = jenkins.Jenkins(key)
         return self[key]
 
 
-def parse_job(run_method, options, data, templates):
-    """
-    Generates and returns a job object with the following:
+class JobParser(object):
 
-    * a run method, as defined in the readme
-    * a list of posix-like arguments
-    * a dictionary of data
-    * templates: a dict-like interface of (template_name, template_body) pairs
-    """
-    jenkinsapi_cache = JenkinsApiCache()
+    def __init__(self, data, templates):
+        self._data = data
+        self._templates = templates
+        self._jenkinsapi_cache = JenkinsApiCache()
 
-    for job_dict in run_method(options, data):
+    def parse_job(self, run_method, options):
+        """
+        Generates and returns a job object with the following:
 
-        # unpackaging dict
-        host = job_dict['host']
-        name = job_dict['name']
-        template = job_dict['template']
-        job_data = {
-            'name': name,
-            'host': host,
-            'job_data': job_dict['job_data']
-        }
+        * a run method, as defined in the readme
+        * a list of posix-like arguments
+        * a dictionary of data
+        * templates: a dict-like interface of (template_name, template_body) pairs
+        """
 
-        template_body = templates[template]
-        config_xml = specialize_content(template_body, job_data)
+        for job_dict in run_method(options, self._data):
 
-        yield MiuraJenkinsJob(
-            jenkinsapi_cache[host],
-            name,
-            config_xml
-        )
+            # unpackaging dict
+            host = job_dict['host']
+            name = job_dict['name']
+            template = job_dict['template']
+            job_data = {
+                'name': name,
+                'host': host,
+                'job_data': job_dict['job_data']
+            }
+
+            template_body = self._templates[template]
+            config_xml = specialize_content(template_body, job_data)
+
+            yield MiuraJenkinsJob(
+                self._jenkinsapi_cache[host],
+                name,
+                config_xml
+            )
 
 
 class MiuraJenkinsJob(object):

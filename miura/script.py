@@ -40,6 +40,11 @@ class MiuraScript(object):
         else:
             target_method = 'upsert'
 
-        for job in runner.parse_job(run_method, self.method_options,
-                                    data, templates):
+        job_parser = runner.JobParser(
+            self.method_options,
+            templates,
+        )
+
+        for job in job_parser.parse_job(run_method, self.method_options,
+                                        data, templates):
             getattr(job, target_method)()

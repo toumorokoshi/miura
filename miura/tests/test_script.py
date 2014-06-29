@@ -25,7 +25,7 @@ class TestMiuraScript(object):
         os.chdir(self._directory)
 
     def test_script(self):
-        with patch('miura.runner.parse_job') as jobs:
+        with patch('miura.runner.JobParser.parse_job') as jobs:
             job = Mock()
             job.upsert = Mock()
             jobs.return_value = [job]
@@ -33,7 +33,7 @@ class TestMiuraScript(object):
             assert job.upsert.called
 
     def test_script_delete(self):
-        with patch('miura.runner.parse_job') as jobs:
+        with patch('miura.runner.JobParser.parse_job') as jobs:
             job = Mock()
             job.delete = Mock()
             jobs.return_value = [job]
