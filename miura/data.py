@@ -1,6 +1,10 @@
-import yaml
 import os
+import re
+import yaml
 from .exceptions import MiuraException
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def load_data_from_path(path):
@@ -46,3 +50,20 @@ def retrieve_data(file_paths):
                 )
             data_dict.update(content)
     return data_dict
+
+
+def filter_data(data, filter_dict):
+    """ filter a data dictionary for values only matching the filter """
+    for key, match_string in filter_dict.items():
+        if key not in data:
+            logger.warning("{0} doesn't match a top level key".format(key))
+            continue
+        values = data[key]
+        matcher = re.compile(match_string)
+        if isinstance(values, list):
+            values = [v for v in values if matcher.search(v)]
+        elif isinstance(values, dict):
+            values = dict((k, v) for k, v in values.items() if matcher.search(k))
+        else:
+            raise MiuraException("cannot filter a {0}".format(type(values)))
+        data[key] = values

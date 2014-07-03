@@ -1,7 +1,8 @@
 import os
+import copy
 from miura import data
 from miura.exceptions import MiuraException
-from nose.tools import raises
+from nose.tools import raises, eq_
 
 
 FILE_DIRECTORY = os.path.dirname(__file__)
@@ -58,3 +59,48 @@ def test_load_data_from_path():
         'foo': ['test', 'foo'],
         'bar': ['test', 'bar']
     }
+
+
+class TestFilterData(object):
+
+    def setUp(self):
+        self.data = {
+            'foo': ['bar', 'baz', 'foo'],
+            'dictionary': {
+                'a': 'value',
+                'b': 'value',
+                '1': 'value'
+            }
+        }
+
+    def test_filter_list(self):
+        """ filter_data should filter a top level list """
+        data.filter_data(self.data, {
+            'foo': 'ba[r|z]'
+        })
+        eq_(self.data['foo'], ['bar', 'baz'])
+
+    def test_filter_dict(self):
+        """ filter_data should filter a top level dict """
+        data.filter_data(self.data, {
+            'dictionary': '[a-z]+'
+        })
+        eq_(self.data['dictionary'].keys(), ['a', 'b'])
+
+    def test_filter_nonexistent_key(self):
+        """ filter_data should do nothing for a nonexistent key """
+        original_data = copy.deepcopy(self.data)
+        data.filter_data(self.data, {
+            'blablah': '[a-z]+'
+        })
+        eq_(original_data, self.data)
+
+    @raises(MiuraException)
+    def test_filter_bad_data_type(self):
+        data_dict = {
+            'test': os
+        }
+        filter_dict = {
+            'test': 'test'
+        }
+        data.filter_data(data_dict, filter_dict)

@@ -17,12 +17,14 @@ class MiuraScript(object):
     def __init__(self, script_name,
                  data_directory,
                  scripts_directory,
-                 template_directory
+                 template_directory,
+                 data_filters=None
                  ):
         self.script_name = script_name
         self.data_directory = data_directory
         self.scripts_directory = scripts_directory
         self.template_directory = template_directory
+        self.data_filters = data_filters or {}
         self.method_options = {}
 
     def __call__(self):
