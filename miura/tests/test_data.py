@@ -34,7 +34,7 @@ def test_retrieve_data():
         os.path.abspath(os.path.join(DATA_DIRECTORY, 'directory', 'bar.yaml'))
     ]
     assert data.retrieve_data(file_paths) == {
-        'foo': ['test', 'foo'],
+        'foo': ['foo', 'bar', 'baz'],
         'bar': ['test', 'bar']
     }
 
@@ -56,7 +56,7 @@ def test_retrieve_data_list_yaml():
 def test_load_data_from_path():
     directory = os.path.join(FILE_DIRECTORY, 'data', 'directory')
     assert data.load_data_from_path(directory) == {
-        'foo': ['test', 'foo'],
+        'foo': ['foo', 'bar', 'baz'],
         'bar': ['test', 'bar']
     }
 

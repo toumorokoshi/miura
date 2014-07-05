@@ -47,7 +47,8 @@ def main(argv=sys.argv[1:]):
         miura_script = MiuraScript(options['<script_name>'],
                                    DATA_DIRECTORY,
                                    SCRIPTS_DIRECTORY,
-                                   TEMPLATE_DIRECTORY)
+                                   TEMPLATE_DIRECTORY,
+                                   data_filters=filters)
         if options['--delete']:
             miura_script.delete = True
         miura_script()

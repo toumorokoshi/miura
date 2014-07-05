@@ -1,5 +1,4 @@
 import os
-import sys
 from miura import script
 from mock import patch, Mock
 

@@ -2,8 +2,9 @@ import os
 
 from miura import runner
 from .utils import get_method_from_module, format_path_to_module
-from .data import load_data_from_path
+from .data import load_data_from_path, filter_data
 from .template import TemplateSet
+from .exceptions import MiuraException
 
 DEFAULT_DATA_DIRECTORY = os.path.join(os.curdir, 'data')
 DEFAULT_TEMPLATE_DIRECTORY = os.path.join(os.curdir, 'templates')
@@ -33,8 +34,15 @@ class MiuraScript(object):
             self.script_name
         )
 
-        run_method = get_method_from_module(target_module, 'run')
+        try:
+            run_method = get_method_from_module(target_module, 'run')
+        except ImportError:
+            raise MiuraException("Unable to find script {0}".format(target_module))
+
         data = load_data_from_path(self.data_directory)
+        if self.data_filters:
+            filter_data(data, self.data_filters)
+
         templates = TemplateSet(self.template_directory)
 
         if self.delete:
@@ -43,10 +51,9 @@ class MiuraScript(object):
             target_method = 'upsert'
 
         job_parser = runner.JobParser(
-            self.method_options,
+            data,
             templates,
         )
 
-        for job in job_parser.parse_job(run_method, self.method_options,
-                                        data, templates):
+        for job in job_parser.parse_job(run_method, self.method_options):
             getattr(job, target_method)()

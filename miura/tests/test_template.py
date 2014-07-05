@@ -12,10 +12,10 @@ class TestTemplateSet(object):
         self.template_set = TemplateSet(TEMPLATE_DIRECTORY)
 
     def test_get_template(self):
-        assert self.template_set.get('test.xml').strip() == "{{ test }}"
+        assert self.template_set.get('test.xml').strip() == "{{ job_data.test }}"
 
     def test_get_template_key_getitem(self):
-        assert self.template_set['test.xml'].strip() == "{{ test }}"
+        assert self.template_set['test.xml'].strip() == "{{ job_data.test }}"
 
     @raises(AssertionError)
     def test_get_nonexistent_template(self):
