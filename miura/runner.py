@@ -80,3 +80,10 @@ class MiuraJenkinsJob(object):
         if self.jenkins_host.has_job(self.name):
             LOGGER.info("deleting {0}...".format(self.name))
             self.jenkins_host.delete_job(self.name)
+
+    def print_info(self):
+        """ print information about the jenkins job """
+        LOGGER.info("Job Info: {name} -> {host}".format(
+            name=self.name,
+            host=self.jenkins_host.baseurl
+        ))

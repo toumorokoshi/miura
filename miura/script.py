@@ -6,10 +6,13 @@ from .data import load_data_from_path, filter_data
 from .template import TemplateSet
 from .exceptions import MiuraException
 
+import logging
+
 DEFAULT_DATA_DIRECTORY = os.path.join(os.curdir, 'data')
 DEFAULT_TEMPLATE_DIRECTORY = os.path.join(os.curdir, 'templates')
 DEFAULT_SCRIPTS_DIRECTORY = os.path.join(os.curdir, 'scripts')
 
+LOGGER = logging.getLogger(__name__)
 
 class MiuraScript(object):
 
@@ -47,6 +50,9 @@ class MiuraScript(object):
 
         if self.delete:
             target_method = 'delete'
+        if self.dry_run:
+            LOGGER.info("Performing a Dry Run! No Jobs Are Being Created")
+            target_method = 'print_info'
         else:
             target_method = 'upsert'
 

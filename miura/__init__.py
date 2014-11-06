@@ -2,12 +2,13 @@
 
 Usage:
   miura docs
-  miura [-d] [-f <filter>...] <script_name> [<args>...]
+  miura [-d --dry-run] [-f <filter>...] <script_name> [<args>...]
 
 Options:
   -h, --help                              Show this usage guide.
   -f <filter>..., --filter <filter>...    Filters
   -d, --delete                            if set, will delete jobs
+  --dry-run                               don't actually perform the operation
 """
 from docopt import docopt
 import logging
@@ -51,6 +52,8 @@ def main(argv=sys.argv[1:]):
                                    data_filters=filters)
         if options['--delete']:
             miura_script.delete = True
+        if options['--dry-run']:
+            miura_script.dry_run = True
         miura_script()
 
     except (MiuraException, AssertionError):
