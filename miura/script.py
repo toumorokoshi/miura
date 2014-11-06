@@ -52,11 +52,12 @@ class MiuraScript(object):
 
         if self.delete:
             target_method = 'delete'
+        else:
+            target_method = 'upsert'
+
         if self.dry_run:
             LOGGER.info("Performing a Dry Run! No Jobs Are Being Created")
             target_method = 'print_info'
-        else:
-            target_method = 'upsert'
 
         job_parser = runner.JobParser(
             data,
