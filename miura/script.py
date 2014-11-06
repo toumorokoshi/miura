@@ -14,9 +14,11 @@ DEFAULT_SCRIPTS_DIRECTORY = os.path.join(os.curdir, 'scripts')
 
 LOGGER = logging.getLogger(__name__)
 
+
 class MiuraScript(object):
 
     delete = False  # if true, delete the jobs instead of upserting them
+    dry_run = False  # if true, the jobs will not run
 
     def __init__(self, script_name,
                  data_directory,

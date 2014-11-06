@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-try:
-    from setuptools import setup, find_packages
-except:
-    from distutils.core import setup
+from setuptools import find_packages
+from distutils.core import setup
 
 setup(name='miura',
-      version='0.0.2',
+      version='0.0.3',
       description='a Jenkins job management tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
