@@ -1,3 +1,4 @@
+import os
 import logging
 from utils import specialize_content
 from jenkinsapi import jenkins
@@ -81,7 +82,18 @@ class MiuraJenkinsJob(object):
             LOGGER.info("deleting {0}...".format(self.name))
             self.jenkins_host.delete_job(self.name)
 
-    def print_info(self):
+    def print_job(self, directory):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        job_filename = "{0}-{1}.xml".format(
+            self.jenkins_host.baseurl, self.name
+        )
+
+        with open(os.path.join(directory, job_filename), 'w+') as fh:
+            fh.write(self.config_xml)
+
+    def dry_run(self):
         """ print information about the jenkins job """
         LOGGER.info("Job Info: {name} -> {host}".format(
             name=self.name,

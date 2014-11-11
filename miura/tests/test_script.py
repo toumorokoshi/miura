@@ -39,3 +39,23 @@ class TestMiuraScript(object):
             self.miura_script.delete = True
             self.miura_script()
             assert job.delete.called
+
+    def test_script_dry_run(self):
+        with patch('miura.runner.JobParser.parse_job') as jobs:
+            job = Mock()
+            job.dry_run = Mock()
+            jobs.return_value = [job]
+            self.miura_script.dry_run = True
+            self.miura_script()
+            assert job.dry_run.called
+
+    def test_script_print_job(self):
+        with patch('miura.runner.JobParser.parse_job') as jobs:
+            job = Mock()
+            job.print_job = Mock()
+            job.upsert = Mock()
+            jobs.return_value = [job]
+            self.miura_script.print_dir = "foo"
+            self.miura_script()
+            assert job.print_job.called
+            assert job.upsert.called

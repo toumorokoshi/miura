@@ -19,6 +19,7 @@ class MiuraScript(object):
 
     delete = False  # if true, delete the jobs instead of upserting them
     dry_run = False  # if true, the jobs will not run
+    print_dir = None  # if set, will print configs to the directory passed
 
     def __init__(self, script_name,
                  data_directory,
@@ -57,7 +58,7 @@ class MiuraScript(object):
 
         if self.dry_run:
             LOGGER.info("Performing a Dry Run! No Jobs Are Being Created")
-            target_method = 'print_info'
+            target_method = 'dry_run'
 
         job_parser = runner.JobParser(
             data,
@@ -65,4 +66,6 @@ class MiuraScript(object):
         )
 
         for job in job_parser.parse_job(run_method, self.method_options):
+            if self.print_dir:
+                job.print_job(self.print_dir)
             getattr(job, target_method)()

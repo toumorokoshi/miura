@@ -1,6 +1,10 @@
 from miura import runner
-from mock import patch, Mock, call
+from mock import patch, Mock
 from collections import defaultdict
+from nose.tools import eq_, ok_
+import os
+import shutil
+import tempfile
 
 
 def test_jenkins_api_cache():
@@ -54,6 +58,7 @@ class TestMiuraJenkinsJob(object):
     def setUp(self):
         self.jenkins_host = Mock()
         self.jenkins_host.has_job.return_value = True
+        self.jenkins_host.baseurl = "baseurl"
         self.name = "foo"
         self.config_xml = "bar"
         self.job = runner.MiuraJenkinsJob(
@@ -84,3 +89,37 @@ class TestMiuraJenkinsJob(object):
         with patch.object(self.jenkins_host, 'delete_job') as delete_job:
             self.job.delete()
             delete_job.assert_called_once_with(self.name)
+
+    def test_print_job(self):
+        temp_dir = tempfile.mkdtemp()
+        try:
+            jenkins_job = Mock()
+            jenkins_job.update_config = Mock()
+            self.jenkins_host.__getitem__ = lambda k, d: jenkins_job
+            self.job.print_job(temp_dir)
+            file_name = "baseurl-foo.xml"
+            target_pom = os.path.join(temp_dir, file_name)
+            ok_(os.path.exists(target_pom))
+            contents = None
+            with open(target_pom) as fh:
+                contents = fh.read()
+            eq_(contents, "bar")
+        finally:
+            shutil.rmtree(temp_dir)
+
+    def test_print_job_no_directory(self):
+        temp_dir_root = tempfile.mkdtemp()
+        temp_dir = os.path.join(temp_dir_root, "temp2")
+        try:
+            jenkins_job = Mock()
+            jenkins_job.update_config = Mock()
+            self.jenkins_host.__getitem__ = lambda k, d: jenkins_job
+            self.job.print_job(temp_dir)
+            ok_(os.path.exists(temp_dir))
+        finally:
+            shutil.rmtree(temp_dir_root)
+
+    def test_dry_run(self):
+        with patch.object(self.jenkins_host, 'delete_job') as delete_job:
+            self.job.dry_run()
+            assert not delete_job.called

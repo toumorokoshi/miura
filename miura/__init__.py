@@ -2,11 +2,12 @@
 
 Usage:
   miura docs
-  miura [-d --dry-run] [-f <filter>...] <script_name> [<args>...]
+  miura [-d --dry-run -p <print_dir>] [-f <filter>...] <script_name> [<args>...]
 
 Options:
   -h, --help                              Show this usage guide.
   -f <filter>..., --filter <filter>...    Filters
+  -p <print_dir>, --print <print_dir>     Print the jobs out to a directory
   -d, --delete                            if set, will delete jobs
   --dry-run                               don't actually perform the operation
 """
@@ -54,6 +55,8 @@ def main(argv=sys.argv[1:]):
             miura_script.delete = True
         if options['--dry-run']:
             miura_script.dry_run = True
+        if options['--print']:
+            miura_script.print_directory = options['<print_dir>']
         miura_script()
 
     except (MiuraException, AssertionError):
