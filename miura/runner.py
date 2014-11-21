@@ -82,12 +82,16 @@ class MiuraJenkinsJob(object):
             LOGGER.info("deleting {0}...".format(self.name))
             self.jenkins_host.delete_job(self.name)
 
+    @staticmethod
+    def _escape_string(string):
+        return string.replace('/', '')
+
     def print_job(self, directory):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
         job_filename = "{0}-{1}.xml".format(
-            self.jenkins_host.baseurl, self.name
+            self._escape_string(self.jenkins_host.baseurl), self.name
         )
 
         with open(os.path.join(directory, job_filename), 'w+') as fh:
