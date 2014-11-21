@@ -56,7 +56,7 @@ def main(argv=sys.argv[1:]):
         if options['--dry-run']:
             miura_script.dry_run = True
         if options['--print']:
-            miura_script.print_directory = options['<print_dir>']
+            miura_script.print_directory = options['--print']
         miura_script()
 
     except (MiuraException, AssertionError):

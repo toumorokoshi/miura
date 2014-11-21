@@ -4,7 +4,7 @@ from setuptools import find_packages
 from distutils.core import setup
 
 setup(name='miura',
-      version='0.1.3',
+      version='0.1.4',
       description='a Jenkins job management tool',
       long_description=open('README.rst').read(),
       author='Yusuke Tsutsumi',
